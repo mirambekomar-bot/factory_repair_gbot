@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отчет о ремонте</title>
+    <!-- Подключаем скрипт Telegram -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; background-color: var(--tg-theme-bg-color); color: var(--tg-theme-text-color); padding: 20px; }
+        select, textarea, button { width: 100%; margin-bottom: 15px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; }
+        button { background-color: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); border: none; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h3>Новый отчет</h3>
+    <label>Оборудование:</label>
+    <select id="eq_id">
+        <option value="CNC-01">Станок ЧПУ-01</option>
+        <option value="PRESS-05">Пресс гидравлический</option>
+    </select>
+
+    <label>Состояние:</label>
+    <select id="status">
+        <option value="ok">Работает</option>
+        <option value="warning">Требует внимания</option>
+        <option value="critical">Авария/Простой</option>
+    </select>
+
+    <label>Описание:</label>
+    <textarea id="desc" rows="3"></textarea>
+
+    <button id="send_data">Отправить отчет</button>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Развернуть на весь экран
+
+        document.getElementById('send_data').addEventListener('click', () => {
+            const data = {
+                equipment: document.getElementById('eq_id').value,
+                status: document.getElementById('status').value,
+                description: document.getElementById('desc').value,
+                user: tg.initDataUnsafe.user?.username || "unknown"
+            };
+
+            // Отправляем данные боту в формате JSON
+            tg.sendData(JSON.stringify(data));
+            tg.close(); // Закрываем приложение после отправки
+        });
+    </script>
+</body>
+</html>
